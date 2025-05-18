@@ -2,7 +2,9 @@ import { Controller, Post, Get, Body, UseGuards, Req, Param } from '@nestjs/comm
 import { PortfoliosService } from './portfolios.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreatePortfolioDto } from '../auth/dto/create-portfolio.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('portfolios')
 @UseGuards(JwtAuthGuard)
 @Controller('portfolios')
 export class PortfoliosController {

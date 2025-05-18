@@ -8,13 +8,12 @@ import { execSync } from 'child_process';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Ejecutar migraciones si está en producción o entorno de deploy
   if (process.env.NODE_ENV === 'production' || process.env.RUN_MIGRATIONS === 'true') {
     try {
-      console.log('📦 Ejecutando migraciones Prisma...');
+      console.log(' Ejecutando migraciones Prisma...');
       execSync('npx prisma migrate deploy', { stdio: 'inherit' });
     } catch (err) {
-      console.error('❌ Error ejecutando migraciones:', err);
+      console.error(' Error ejecutando migraciones:', err);
     }
   }
 
