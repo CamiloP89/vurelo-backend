@@ -2,14 +2,14 @@ services:
   - type: web
     name: vurelo-api
     runtime: docker
-    repo: https://github.com/TU_USUARIO/vurelo-backend
+    repo: https://github.com/CamiloP89/vurelo-backend
     branch: main
     plan: free
     envVars:
       - key: DATABASE_URL
         value: postgresql://postgres:postgres@vurelo-db:5432/vurelo
       - key: JWT_SECRET
-        value: mi_clave_secreta
+        value: admin
       - key: JWT_EXPIRES_IN
         value: 1d
     dockerContext: .

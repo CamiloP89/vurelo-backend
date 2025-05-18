@@ -1,24 +1,36 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { IoAdapter } from '@nestjs/platform-socket.io';
-import { ValidationPipe } from '@nestjs/common';
+import { PrismaService } from './prisma/prisma.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { execSync } from 'child_process';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  app.useWebSocketAdapter(new IoAdapter(app));
 
-  
+  // Ejecutar migraciones si está en producción o entorno de deploy
+  if (process.env.NODE_ENV === 'production' || process.env.RUN_MIGRATIONS === 'true') {
+    try {
+      console.log('📦 Ejecutando migraciones Prisma...');
+      execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+    } catch (err) {
+      console.error('❌ Error ejecutando migraciones:', err);
+    }
+  }
+
+  // Swagger
   const config = new DocumentBuilder()
     .setTitle('Vurelo API')
-    .setDescription('Documentación de la API para la prueba técnica Backend')
+    .setDescription('Documentación Swagger de la API')
     .setVersion('1.0')
-    .addBearerAuth() 
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); 
+  SwaggerModule.setup('api', app, document);
+
+  // Validaciones globales
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
