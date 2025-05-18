@@ -1,98 +1,157 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+#  Vurelo Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este proyecto es una **API RESTful** y **WebSocket** construida con [NestJS](https://nestjs.com/) y [Prisma ORM](https://www.prisma.io/) para la gestión de usuarios, portafolios de criptoactivos, y transacciones. La API incluye autenticación JWT y comunicación en tiempo real con WebSockets para notificar transacciones en vivo.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+##  Tecnologías utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** + **TypeScript**
+- **Prisma ORM**
+- **PostgreSQL** (Docker y Render)
+- **JWT** para autenticación
+- **WebSockets** (Gateway)
+- **Swagger** para documentación interactiva
+- **Docker** para base de datos local
+- **Render** para deploy productivo
 
-## Project setup
+---
 
-```bash
-$ npm install
+##  Estructura del Proyecto
+
+```
+src/
+├── auth/                // Registro, login y protección JWT
+├── users/               // Gestión de usuarios
+├── portfolios/          // Crear y consultar portafolios
+├── transactions/        // Crear y consultar transacciones
+├── events/              // WebSocket Gateway
+├── prisma/              // Prisma y base de datos
+└── app.module.ts        // Módulo principal
 ```
 
-## Compile and run the project
+---
+
+##  Requisitos previos
+
+- Node.js v18+
+- Docker (para entorno local)
+- Cuenta en [Render](https://render.com/) (para deploy opcional)
+
+---
+
+##  Instalación local
 
 ```bash
-# development
-$ npm run start
+# 1. Clona el repositorio
+git clone https://github.com/camiloP89/vurelo-backend.git
+cd vurelo-backend
 
-# watch mode
-$ npm run start:dev
+# 2. Instala dependencias
+npm install
 
-# production mode
-$ npm run start:prod
+# 3. Crea y corre base de datos local en Docker
+docker-compose up -d
+
+# 4. Configura variables de entorno
+
+El proyecto viene con render en default
+
+DATABASE_URL="postgresql://vurelo_db_user:...@dpg-.../vurelo_db"
+
+Ejemplo `.env` para desarrollo local:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/vurelo"
+JWT_SECRET="mi_clave_secreta"
+JWT_EXPIRES_IN="1d"
 ```
 
-## Run tests
+---
+
+##  Migraciones y cliente Prisma
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate dev --name init
+npx prisma generate
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+##  Ejecutar el servidor
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Accede a Swagger:
+```
+http://localhost:3000/api
+```
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+##  API pública (deploy en Render)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **URL base API:** https://vurelo-backend.onrender.com
+- **Swagger online:** https://vurelo-backend.onrender.com/api
+- **WebSocket URL:** `wss://vurelo-backend.onrender.com`
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+##  WebSocket
 
-## Stay in touch
+- **Evento emitido:** `transaction_created`
+- **Ejemplo de conexión:**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npx wscat -c wss://vurelo-backend.onrender.com
+```
 
-## License
+```js
+const socket = io('wss://vurelo-backend.onrender.com');
+socket.on('transaction_created', (data) => {
+  console.log('Transacción:', data);
+});
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+##  Endpoints principales
+
+| Método | Ruta                            | Descripción                                  |
+|--------|----------------------------------|----------------------------------------------|
+| POST   | /auth/register                  | Registro de usuario                          |
+| POST   | /auth/login                     | Login y obtención de JWT                     |
+| POST   | /auth/me                        | Datos del usuario autenticado                |
+| POST   | /portfolios                     | Crear nuevo portafolio                       |
+| GET    | /portfolios                     | Listar portafolios del usuario               |
+| GET    | /portfolios/:id/value          | Total en USD del portafolio                  |
+| POST   | /transactions                   | Crear transacción (deposit/withdrawal)       |
+| GET    | /transactions/:portfolioId     | Listar transacciones con valor actual USD    |
+
+---
+
+## Cómo probar WebSocket
+
+1. Haz una transacción (`POST /transactions`)
+2. Verás el evento `transaction_created` emitido en WebSocket
+
+---
+
+## Tests
+
+```bash
+npm run test
+```
+
+- Test unitarios por módulo (`users`, `auth`, `transactions`, `portfolios`)
+- Prisma mockeado en servicios
+
+---
+
+##  Autor
+
+Desarrollado por **Camilo Pinzón** como parte de una prueba .
+
+Fecha: 2025-05-18

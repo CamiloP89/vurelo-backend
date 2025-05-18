@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -21,7 +21,16 @@ export class AuthService {
     return result;
   }
 
-  async login(user: any) {
+  async login(dto: { email: string; password: string }) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
+
+    const isMatch = await bcrypt.compare(dto.password, user.password);
+    if (!isMatch) throw new UnauthorizedException('Contraseña incorrecta');
+
     const payload = { sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
@@ -37,7 +46,23 @@ export class AuthService {
         password: hashedPassword,
       },
     });
+
     const { password, ...result } = user;
     return result;
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return user;
   }
 }

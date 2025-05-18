@@ -1,17 +1,18 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreatePortfolioDto } from 'src/auth/dto/create-portfolio.dto';
 
 @Injectable()
 export class PortfoliosService {
   constructor(private prisma: PrismaService) {}
 
-  async create(userId: string, name: string) {
-    return this.prisma.portfolio.create({
-      data: {
-        name,
-        userId,
-      },
-    });
+ async create(userId: string, data: CreatePortfolioDto) {
+  return this.prisma.portfolio.create({
+    data: {
+      name: data.name,
+      userId: userId,
+    },
+  });
   }
 
   async findAllByUser(userId: string) {

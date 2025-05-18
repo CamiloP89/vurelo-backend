@@ -1,9 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreatePortfolioDto {
-  @ApiProperty({ example: 'Mi portafolio principal' })
+  @ApiProperty({
+    description: 'Nombre del portafolio',
+    example: 'Portafolio Cripto Principal',
+  })
   @IsString()
   @IsNotEmpty()
   name: string;
